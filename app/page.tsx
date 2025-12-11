@@ -1,8 +1,7 @@
 "use client";
 import { useChat } from "@ai-sdk/react";
-import type { ToolUIPart } from "ai";
 import { CopyIcon, GlobeIcon, RefreshCcwIcon } from "lucide-react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import {
 	Conversation,
 	ConversationContent,
@@ -49,6 +48,14 @@ import {
 	SourcesContent,
 	SourcesTrigger,
 } from "@/components/ai-elements/sources";
+import {
+	Tool,
+	ToolContent,
+	ToolHeader,
+	ToolInput,
+	ToolOutput,
+} from "@/components/ai-elements/tool";
+import type { MyUIMessage } from "./api/chat/route";
 
 const models = [
 	{
@@ -61,31 +68,14 @@ const models = [
 	},
 ];
 
-type WeatherToolInput = {
-	location: string;
-	units: "celsius" | "fahrenheit";
-};
-type WeatherToolOutput = {
-	location: string;
-	temperature: string;
-	conditions: string;
-	humidity: string;
-	windSpeed: string;
-	lastUpdated: string;
-};
-// biome-ignore lint: no unused-vars
-type WeatherToolUIPart = ToolUIPart<{
-	fetch_weather_data: {
-		input: WeatherToolInput;
-		output: WeatherToolOutput;
-	};
-}>;
-
 const ChatBotDemo = () => {
 	const [input, setInput] = useState("");
 	const [model, setModel] = useState<string>(models[0].value);
 	const [webSearch, setWebSearch] = useState(false);
-	const { messages, sendMessage, status, regenerate } = useChat();
+	const { messages, sendMessage, status, regenerate } = useChat<MyUIMessage>({
+		experimental_throttle: 100,
+	});
+
 	const handleSubmit = (message: PromptInputMessage) => {
 		const hasText = Boolean(message.text);
 		const hasAttachments = Boolean(message.files?.length);
@@ -106,6 +96,7 @@ const ChatBotDemo = () => {
 		);
 		setInput("");
 	};
+
 	return (
 		<div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
 			<div className="flex flex-col h-full">
@@ -181,6 +172,27 @@ const ChatBotDemo = () => {
 													<ReasoningContent>{part.text}</ReasoningContent>
 												</Reasoning>
 											);
+										case "tool-fetch_weather_data":
+											return (
+												<Tool key={`${message.id}-${i}`} defaultOpen={false}>
+													<ToolHeader
+														type="tool-fetch_weather_data"
+														state={part.state}
+													/>
+													<ToolContent>
+														{part.input && <ToolInput input={part.input} />}
+														<ToolOutput
+															output={
+																<MessageResponse>
+																	{part.output &&
+																		formatWeatherResult(part.output)}
+																</MessageResponse>
+															}
+															errorText={part.errorText}
+														/>
+													</ToolContent>
+												</Tool>
+											);
 										default:
 											return null;
 									}
@@ -251,4 +263,14 @@ const ChatBotDemo = () => {
 		</div>
 	);
 };
+
+function formatWeatherResult(result: WeatherToolOutput): string {
+	return `**Weather for ${result.location}**
+**Temperature:** ${result.temperature}  
+**Conditions:** ${result.conditions}  
+**Humidity:** ${result.humidity}  
+**Wind Speed:** ${result.windSpeed}  
+*Last updated: ${result.lastUpdated}*`;
+}
+
 export default ChatBotDemo;
