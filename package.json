@@ -31,6 +31,7 @@
     "motion": "^12.23.26",
     "nanoid": "^5.1.6",
     "next": "16.0.8",
+    "ollama-ai-provider-v2": "^1.5.5",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "shiki": "^3.19.0",

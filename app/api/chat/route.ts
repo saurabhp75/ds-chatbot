@@ -6,6 +6,7 @@ import {
 	tool,
 	type UIMessage,
 } from "ai";
+import { ollama } from "ollama-ai-provider-v2";
 import { z } from "zod";
 
 // Allow streaming responses up to 30 seconds
@@ -52,7 +53,8 @@ export async function POST(req: Request) {
 		webSearch: boolean;
 	} = await req.json();
 	const result = streamText({
-		model: webSearch ? "perplexity/sonar" : model,
+		// model: webSearch ? "perplexity/sonar" : model,
+		model: ollama("qwen3:4b"),
 		messages: convertToModelMessages(messages),
 		tools,
 		stopWhen: stepCountIs(3),
