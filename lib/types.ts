@@ -9,7 +9,7 @@ type Learning = {
 	followUpQuestions: string[];
 };
 
-type Research = {
+export type Research = {
 	query: string | undefined;
 	queries: string[];
 	searchResults: SearchResult[];
