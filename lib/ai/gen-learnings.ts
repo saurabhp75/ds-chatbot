@@ -13,14 +13,14 @@ const generateLearnings = async (query: string, searchResult: SearchResult) => {
 	const { object } = await generateObject({
 		model: ollamaQwen3,
 		prompt: `The user is researching "${query}". The following search result was deemed relevant.
-Generate a learning and follow-up questions from the following search result:
+Generate a learning and a follow-up question from the following search result:
 
 <search_result>
 ${JSON.stringify(searchResult)}
 </search_result>`,
 		schema: z.object({
 			learning: z.string(),
-			followUpQuestions: z.array(z.string()).min(1),
+			followUpQuestions: z.array(z.string()),
 		}),
 	});
 
