@@ -1,5 +1,7 @@
+import fs from "node:fs";
 import { accumulatedResearch } from "../types";
 import generateLearnings from "./gen-learnings";
+import generateReport from "./gen-report";
 import { generateSearchQueries } from "./gen-search-queries";
 import searchAndProcess from "./search-and-process";
 
@@ -39,6 +41,22 @@ const deepResearch = async (
 			await deepResearch(newQuery, depth - 1, Math.ceil(breadth / 2));
 		}
 	}
+};
+
+// Example usage of deepResearch
+const _main = async () => {
+	const research = await deepResearch(
+		"What do you need to be a D1 shotput athlete?",
+	);
+	if (!research) {
+		console.log("No research generated.");
+		return;
+	}
+	console.log("Research completed!");
+	console.log("Generating report...");
+	const report = await generateReport(research);
+	console.log("Report generated! report.md");
+	fs.writeFileSync("report.md", report);
 };
 
 export default deepResearch;
