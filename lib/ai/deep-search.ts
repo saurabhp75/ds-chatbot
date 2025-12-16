@@ -21,7 +21,10 @@ const deepResearch = async (
 
 	for (const query of queries) {
 		console.log(`Searching the web for: ${query}`);
-		const searchResults = await searchAndProcess(query);
+		const searchResults = await searchAndProcess(
+			query,
+			accumulatedResearch.searchResults,
+		);
 		for (const searchResult of searchResults) {
 			console.log(`Processing search result: ${searchResult.url}`);
 			const learnings = await generateLearnings(query, searchResult);
