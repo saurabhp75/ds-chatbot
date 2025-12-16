@@ -1,13 +1,8 @@
 import { generateObject, generateText, stepCountIs, tool, zodSchema } from "ai";
 import { z } from "zod";
 import { ollamaQwen3 } from "../models";
+import type { SearchResult } from "../types";
 import searchWeb from "./search-web";
-
-type SearchResult = {
-	title: string;
-	url: string;
-	content: string;
-};
 
 const evaluateParameters = z.object({});
 

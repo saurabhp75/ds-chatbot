@@ -2,12 +2,7 @@ import { generateObject } from "ai";
 import { z } from "zod";
 
 import { ollamaQwen3 } from "../models";
-
-type SearchResult = {
-	title: string;
-	url: string;
-	content: string;
-};
+import type { SearchResult } from "../types";
 
 const generateLearnings = async (query: string, searchResult: SearchResult) => {
 	const { object } = await generateObject({
