@@ -1,10 +1,8 @@
-import { generateObject, generateText, stepCountIs, tool, zodSchema } from "ai";
+import { generateObject, generateText, stepCountIs, tool } from "ai";
 import { z } from "zod";
 import { ollamaQwen3 } from "../models";
 import type { SearchResult } from "../types";
 import searchWeb from "./search-web";
-
-const evaluateParameters = z.object({});
 
 const searchAndProcess = async (query: string) => {
 	const pendingSearchResults: SearchResult[] = [];
@@ -29,7 +27,7 @@ const searchAndProcess = async (query: string) => {
 			}),
 			evaluate: tool({
 				description: "Evaluate the search results",
-				inputSchema: zodSchema(evaluateParameters),
+				inputSchema: z.object({}),
 				execute: async () => {
 					const pendingResult = pendingSearchResults.pop();
 					if (!pendingResult) {
@@ -38,7 +36,7 @@ const searchAndProcess = async (query: string) => {
 
 					const { object: evaluation } = await generateObject({
 						model: ollamaQwen3,
-						prompt: `Evaluate whether the search results are relevant and will help answer the following query: ${query}. If the page already exists in the existing results, mark it as irrelevant.
+						prompt: `Evaluate whether the search results are relevant and help answer the following query: ${query}. If the page already exists in the existing results, mark it as irrelevant.
             <search_results>
             ${JSON.stringify(pendingResult)}
             </search_results>`,
