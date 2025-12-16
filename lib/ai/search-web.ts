@@ -15,7 +15,7 @@ const searchWeb = async (query: string) => {
 	console.log({ results });
 
 	return results.map((r) => ({
-		title: r.title, // Title of the search result
+		title: r.title ?? "No title from exa API", // Title of the search result
 		url: r.url,
 		content: r.text,
 	}));
