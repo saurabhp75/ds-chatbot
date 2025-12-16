@@ -6,8 +6,8 @@ import {
 	tool,
 	type UIMessage,
 } from "ai";
-import { ollama } from "ollama-ai-provider-v2";
 import { z } from "zod";
+import { ollamaDeepSeek } from "@/lib/models";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -43,18 +43,11 @@ const tools = {
 export type MyUIMessage = UIMessage<never, never, InferUITools<typeof tools>>;
 
 export async function POST(req: Request) {
-	const {
-		messages,
-		model,
-		webSearch,
-	}: {
-		messages: UIMessage[];
-		model: string;
-		webSearch: boolean;
-	} = await req.json();
+	const { messages }: { messages: UIMessage[] } = await req.json();
 	const result = streamText({
 		// model: webSearch ? "perplexity/sonar" : model,
-		model: ollama("qwen3:4b"),
+		// model: ollamaLlama,
+		model: ollamaDeepSeek,
 		messages: convertToModelMessages(messages),
 		tools,
 		stopWhen: stepCountIs(3),
