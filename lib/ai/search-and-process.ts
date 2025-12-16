@@ -4,7 +4,10 @@ import { ollamaQwen3 } from "../models";
 import type { SearchResult } from "../types";
 import searchWeb from "./search-web";
 
-const searchAndProcess = async (query: string) => {
+const searchAndProcess = async (
+	query: string,
+	accumulatedSources: SearchResult[],
+) => {
 	const pendingSearchResults: SearchResult[] = [];
 	const finalSearchResults: SearchResult[] = [];
 	await generateText({
@@ -36,9 +39,12 @@ const searchAndProcess = async (query: string) => {
 
 					const { object: evaluation } = await generateObject({
 						model: ollamaQwen3,
-						prompt: `Evaluate whether the search results are relevant and help answer the following query: ${query}. If the page already exists in the existing results, mark it as irrelevant.
+						prompt: `Evaluate whether the search results are relevant and help answer the following query: ${query}. If the page already exists in the existing results, mark it as irrelevant.\n
             <search_results>
             ${JSON.stringify(pendingResult)}
+            </search_results>
+			<search_results>
+            ${JSON.stringify(accumulatedSources.map((result) => result.url))}
             </search_results>`,
 						output: "enum",
 						enum: ["relevant", "irrelevant"],
