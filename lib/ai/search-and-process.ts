@@ -15,7 +15,7 @@ const searchAndProcess = async (
 		prompt: `Search the web for information about ${query}`,
 		system:
 			"You are a researcher. For each query, search the web and then evaluate if the results are relevant and will help answer the following query",
-		stopWhen: stepCountIs(5),
+		stopWhen: stepCountIs(3),
 		tools: {
 			searchWeb: tool({
 				description: "Search the web for information about a given query",
