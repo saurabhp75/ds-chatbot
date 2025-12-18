@@ -18,9 +18,9 @@ export type Research = {
 };
 
 export const accumulatedResearch: Research = {
-	query: undefined,
-	queries: [],
-	searchResults: [],
-	learnings: [],
-	completedQueries: [],
+	query: undefined,     // user prompt
+	queries: [],          // generated search queries
+	searchResults: [],    // all search results	
+	learnings: [],        // all learnings from search results
+	completedQueries: [], // all completed search queries
 };

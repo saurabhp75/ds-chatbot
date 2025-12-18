@@ -18,18 +18,23 @@ const deepResearch = async (
 		return accumulatedResearch;
 	}
 
+	// Generate search queries based on the user prompt
 	const queries = await generateSearchQueries(prompt, breadth);
 	accumulatedResearch.queries = queries;
 
+	// Process each search query and generate learnings
 	for (const query of queries) {
 		console.log(`Searching the web for: ${query}`);
+
 		const searchResults = await searchAndProcess(
 			query,
 			accumulatedResearch.searchResults,
 		);
+		
 		for (const searchResult of searchResults) {
 			console.log(`Processing search result: ${searchResult.url}`);
 			const learnings = await generateLearnings(query, searchResult);
+
 			// call deepResearch recursively with decrementing depth and breadth
 			accumulatedResearch.learnings.push(learnings);
 			accumulatedResearch.completedQueries.push(query);
@@ -48,14 +53,18 @@ const _main = async () => {
 	const research = await deepResearch(
 		"What do you need to be a D1 shotput athlete?",
 	);
+
 	if (!research) {
 		console.log("No research generated.");
 		return;
 	}
+
 	console.log("Research completed!");
 	console.log("Generating report...");
+
 	const report = await generateReport(research);
 	console.log("Report generated! report.md");
+	
 	fs.writeFileSync("report.md", report);
 };
 

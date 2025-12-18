@@ -3,6 +3,7 @@ import { SearchResult } from "../types";
 
 const exa = new Exa(process.env.EXA_API_KEY);
 
+// Gives an array of search results for a given query
 const searchWeb = async (query: string) => {
 	const { results } = await exa.search(query, {
 		numResults: 1,

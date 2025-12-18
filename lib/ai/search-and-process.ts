@@ -4,6 +4,8 @@ import { ollamaQwen3 } from "../models";
 import type { SearchResult } from "../types";
 import searchWeb from "./search-web";
 
+// This function searches web and evaluate every 
+// LLM generated subquery 
 const searchAndProcess = async (
 	query: string,
 	accumulatedSources: SearchResult[],
@@ -14,9 +16,11 @@ const searchAndProcess = async (
 		model: ollamaQwen3,
 		prompt: `Search the web for information about ${query}`,
 		system:
-			"You are a researcher. For each query, search the web and then evaluate if the results are relevant and will help answer the following query",
+			"You are a researcher. For each query, search the web and then evaluate if the results are relevant and will help in answering the query",
 		stopWhen: stepCountIs(3),
 		tools: {
+			// TODO: This tool can be refactored to run deteministically outside
+			// of the LLM loop. Also dedup the serach results.
 			searchWeb: tool({
 				description: "Search the web for information about a given query",
 				inputSchema: z.object({
@@ -28,6 +32,7 @@ const searchAndProcess = async (
 					return results;
 				},
 			}),
+			// This tool 
 			evaluate: tool({
 				description: "Evaluate the search results",
 				inputSchema: z.object({}),
