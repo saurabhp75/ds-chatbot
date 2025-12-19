@@ -26,20 +26,22 @@ const deepResearch = async (
 	for (const query of queries) {
 		console.log(`Searching the web for: ${query}`);
 
+		// Populate searchResults for the current query
 		const searchResults = await searchAndProcess(
 			query,
 			accumulatedResearch.searchResults,
 		);
 		
+		// Generate learnings for every search result 
 		for (const searchResult of searchResults) {
 			console.log(`Processing search result: ${searchResult.url}`);
 			const learnings = await generateLearnings(query, searchResult);
 
-			// call deepResearch recursively with decrementing depth and breadth
+			// Populate learnings and completedQueries
 			accumulatedResearch.learnings.push(learnings);
 			accumulatedResearch.completedQueries.push(query);
 
-			// Recursive call
+			// Call deepResearch recursively with decremented depth and breadth
 			const newQuery = `Overall research goal: ${prompt}\n
         Previous search queries: ${accumulatedResearch.completedQueries.join(", ")}\n
         Follow-up questions: ${learnings.followUpQuestions.join(", ")}`;
